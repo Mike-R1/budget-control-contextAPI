@@ -1,0 +1,55 @@
+import { useEffect, useMemo } from "react"
+import BudgetForm from "./components/BudgetForm"
+import { useBudget } from "./hooks/useBudget"
+import BudgetTracker from "./components/BudgetTracker"
+import ExpenseModal from "./components/ExpenseModal"
+import ExpenseList from "./components/ExpenseList"
+import FilterByCategory from "./components/FilterByCategory"
+
+function App() {
+
+  const { state } = useBudget()
+
+  const isValidBudget = useMemo(() => state.budget > 0, [state.budget])
+
+  useEffect(() => {
+    localStorage.setItem('budget', state.budget.toString())
+    localStorage.setItem('expenses', JSON.stringify(state.expenses))
+  }, [state])
+
+  return (
+    <>
+      <header className=" bg-blue-800 py-8 max-h-72">
+
+        <h1 className=" uppercase text-center font-black text-4xl text-white">Planificador de Gastos</h1>
+
+      </header>
+
+      <div className=" max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-10 mt-10">
+        {isValidBudget ? <BudgetTracker /> : <BudgetForm />}
+      </div>
+
+      {isValidBudget && (
+        <>
+        <main className=" max-w-3xl mx-auto py-10">
+          <FilterByCategory />
+          <ExpenseList />
+          <ExpenseModal />
+
+        </main>
+
+        <footer className=" bg-gray-600 py-5 max-h-72">
+
+        <h1 className=" uppercase text-center font-black  text-xl text-white">Todos los derechos son reservados &copy;  Mike Acosta 2024</h1>
+
+        </footer>
+        </>
+      )}
+
+
+
+    </>
+  )
+}
+
+export default App
